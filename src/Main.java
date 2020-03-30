@@ -2,6 +2,7 @@ import file.ImportPizza;
 import model.Menu;
 import model.Order;
 import model.OrderList;
+import model.Pizza;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -86,9 +87,10 @@ public class Main {
             Order tmpOrder = new Order();
 
             System.out.println("Vælg pizzaer separeret af komma. Eksempel: 22, 22, 10");
-            int[] pizzaIds = INPUT.nextLine().split(", ");
-            for(int pizzaId : pizzaIds) {
-
+            String[] pizzaIds = INPUT.nextLine().split(", ");
+            for(String pizzaId : pizzaIds) {
+                int id = Integer.parseInt(pizzaId);
+                //TODO: Få pizza fra menu med ID, og tilføj til odreren.
             }
 
             System.out.println(
