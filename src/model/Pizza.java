@@ -17,6 +17,10 @@ public class Pizza {
         this.price = price;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return String.format("%-3s %-20s %-70s %s", id + ".", name, Arrays.toString(toppings), price);
