@@ -12,13 +12,12 @@ public class Order implements Comparable<Order> {
     private static int idCounter = 0;
     private LocalDateTime pickupTime;
     private ArrayList<Pizza> items;
-    private static final int DEFAULT_PICKUPTIME = 20;
+    private static final int DEFAULT_PICKUP_TIME_MINUTES = 20;
 
     public Order(){
         this.id = idCounter++;
         this.items = new ArrayList<>();
-        LocalTime time = LocalTime.of(LocalTime.now().getHour(),LocalTime.now().getMinute()+DEFAULT_PICKUPTIME);
-        this.pickupTime = LocalDateTime.of(LocalDate.now(),time);
+        this.pickupTime = LocalDateTime.now().plusMinutes(DEFAULT_PICKUP_TIME_MINUTES);
     }
 
     public void addPizza(Pizza pizza){
