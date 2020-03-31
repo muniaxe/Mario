@@ -45,7 +45,6 @@ public class Order implements Comparable<Order> {
 
     public void finish() {
         this.isDone = true;
-        //TODO: Add pizza til export csv
     }
 
     public int getId() {
@@ -76,5 +75,18 @@ public class Order implements Comparable<Order> {
         String time = String.format("%02d:%02d", pickupTime.getHour(), pickupTime.getMinute());
 
         return String.format("ID: %-4d Pizza: %-35s %-10s %.2f,- DKK", this.id, pizzaIds.toString(), time, price);
+    }
+
+    public String toCSV() {
+        char splitter = ';';
+        double price = 0;
+        String pizzaIds = "";
+        for (Pizza pizza : items) {
+            pizzaIds += pizza.getId() + "|";
+            price += pizza.getPrice();
+        }
+        String time = String.format("%02d:%02d", pickupTime.getHour(), pickupTime.getMinute());
+
+        return String.format("%d"+ splitter + "%s"+ splitter + "%s"+ splitter + "%.2f%n", this.id, pizzaIds.substring(0,pizzaIds.length()-1), time, price);
     }
 }

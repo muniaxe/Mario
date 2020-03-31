@@ -1,3 +1,4 @@
+import file.ExportPizza;
 import file.ImportPizza;
 import model.Menu;
 import model.Order;
@@ -157,19 +158,33 @@ public class Main {
                     "Hvilket tidspunkt? Eksempel: 18:30 * OBS: Ved intet indtastet tidspunkt, er ordren sat til om "
                             + Order.DEFAULT_PICKUP_TIME_MINUTES + " minutter."
             );
-            try {
-                String[] time = INPUT.nextLine().split(":");
-                tmpOrder.setPickupTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
-            } catch (Exception e) {
-                System.err.println("Fejl i det indtastede tidspunkt");
-                finished = false;
+
+            String timeInput = INPUT.nextLine();
+            if(timeInput.length() > 0) {
+                try {
+                    String[] time = timeInput.split(":");
+                    tmpOrder.setPickupTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
+                } catch (Exception e) {
+                    System.err.println("Fejl i det indtastede tidspunkt");
+                    finished = false;
+                }
             }
         } while (!finished);
 
         orders.addOrder(tmpOrder);
-        orders.saveOrders();
+        saveOrders();
         System.out.println("Ordre " + tmpOrder.getId() + " blev oprettet til tidspunktet " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
 
+    }
+
+    private static void saveOrders() {
+        ExportPizza export = new ExportPizza();
+        try {
+            export.exportTodaysOrders(orders);
+        } catch(Exception e) {
+            System.err.println("Der skete en fejl ved at gemme ordrerne.");
+            System.err.println(e.toString());
+        }
     }
 
     private static void exitProgram() {

@@ -1,5 +1,7 @@
 package model;
 
+import file.ExportPizza;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -49,7 +51,7 @@ public class OrderList {
         return null;
     }
 
-    public static void saveOrders() {
-        //Todo: new ExportOrders
+    public ArrayList<Order> getOrders() {
+        return this.orders;
     }
 }
