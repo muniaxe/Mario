@@ -3,6 +3,14 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/*
+@Authors
+Robert Pallesen
+Mathias Hvid
+Emil Dyrhøi Tolderlund Jørgensen
+Jack Hagedorn Jensen
+ */
+
 public class Pizza {
 
     private int id;
@@ -15,6 +23,10 @@ public class Pizza {
         this.name = name;
         this.toppings = toppings;
         this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
     }
 
     public int getId() {
