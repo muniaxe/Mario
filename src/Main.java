@@ -20,7 +20,8 @@ public class Main {
         printWelcome();
         while(running) {
             printCommands();
-            getCommands();
+            String command = getCommand();
+            executeCommand(command);
         }
 
         System.out.println("Tak for i dag!");
@@ -45,7 +46,6 @@ public class Main {
     }
 
     public static void printCommands() {
-        System.out.println("Eksempel kommando: \"ordre ny\"");
         System.out.println("ordre");
         System.out.println("\tny");
         System.out.println("\tændre <id>");
@@ -54,31 +54,48 @@ public class Main {
         System.out.println("afslut");
     }
 
-    public static void getCommands() {
-        String commandInput = "";
-        try {
-            commandInput = INPUT.nextLine();
-
-            String command = commandInput.split(" ")[0];
-            String[] args = null;
-            if(commandInput.split(" ").length > 1)
-                args = commandInput.substring(command.length() + 1).split(" ");
-
-            if (command.equalsIgnoreCase("ordre")) {
-                commandOrder(args);
-            } else if (command.equalsIgnoreCase("menu")) {
-                commandMenu(args);
-            } else if (command.equalsIgnoreCase("afslut")) {
-                exitProgram();
-            } else {
-                System.err.println(commandNotFound(commandInput));
-            }
-        } catch(Exception e) {
-            System.err.println(commandNotFound(commandInput));
+    public static void printCommands(String command) {
+        if(command.equalsIgnoreCase("ordre")) {
+            System.out.println("Vælg en af følgende underkommandoer for ordrebehandling:");
+            System.out.println("\tny");
+            System.out.println("\tændre <id>");
+            System.out.println("\tliste");
         }
     }
 
-    private static void commandMenu(String[] args) {
+    public static String getCommand() {
+        String command = "";
+        try {
+            command = INPUT.nextLine();
+        } catch(Exception e) {
+            System.err.println(commandNotFound(command));
+        }
+        return command;
+    }
+
+    public static void executeCommand(String command) {
+        if (command.equalsIgnoreCase("ordre")) {
+            printCommands(command);
+            String subCommand = getCommand();
+            if(subCommand.equalsIgnoreCase("ny")) {
+                System.out.println("ny ordre");
+            }
+        }
+        else if (command.equalsIgnoreCase("menu")) {
+            //printCommands(command);
+            printMenu();
+        }
+        else if (command.equalsIgnoreCase("afslut")) {
+            exitProgram();
+        }
+        else {
+            System.err.println(commandNotFound(command));
+        }
+    }
+
+
+    private static void printMenu() {
+        System.out.println(menu);
     }
 
     private static void commandOrder(String[] args) {
@@ -105,7 +122,7 @@ public class Main {
         else if(subCommand.equalsIgnoreCase("ændre")) {
 
         }
-        else if(subCommand.equalsIgnoreCase("")) {
+        else if(subCommand.equalsIgnoreCase("liste")) {
 
         }
     }
