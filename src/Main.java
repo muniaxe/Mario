@@ -7,6 +7,14 @@ import model.Pizza;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/*
+@Authors
+Robert Pallesen
+Mathias Hvid
+Emil Dyrhøi Tolderlund Jørgensen
+Jack Hagedorn Jensen
+ */
+
 public class Main {
 
     //Initiate orderlist and menu.
@@ -18,13 +26,13 @@ public class Main {
     public static void main(String[] args) {
         populateMenu();
         printWelcome();
-        while(running) {
+        while (running) {
             printCommands();
             String command = getCommand();
             executeCommand(command);
         }
 
-        System.out.println("Tak for i dag!");
+        System.out.println("Tak fordsgrfdefrstydfgyhfcdghfghjty i dag!");
 
 
     }
@@ -46,20 +54,18 @@ public class Main {
     }
 
     public static void printCommands() {
+        System.out.println("Vælg menupunkt");
         System.out.println("ordre");
-        System.out.println("\tny");
-        System.out.println("\tændre <id>");
-        System.out.println("\tliste");
         System.out.println("menu");
         System.out.println("afslut");
     }
 
     public static void printCommands(String command) {
-        if(command.equalsIgnoreCase("ordre")) {
+        if (command.equalsIgnoreCase("ordre")) {
             System.out.println("Vælg en af følgende underkommandoer for ordrebehandling:");
-            System.out.println("\tny");
-            System.out.println("\tændre <id>");
-            System.out.println("\tliste");
+            System.out.println("ny - laver ny ordre");
+            System.out.println("liste - viser liste over bestillinger");
+            System.out.println("færdiggør <id> - færdiggøre ordre");
         }
     }
 
@@ -67,7 +73,7 @@ public class Main {
         String command = "";
         try {
             command = INPUT.nextLine();
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println(commandNotFound(command));
         }
         return command;
@@ -76,20 +82,40 @@ public class Main {
     public static void executeCommand(String command) {
         if (command.equalsIgnoreCase("ordre")) {
             printCommands(command);
-            String subCommand = getCommand();
-            if(subCommand.equalsIgnoreCase("ny")) {
-                System.out.println("ny ordre");
+            String tmpString = getCommand();
+            String subCommand = tmpString.split(" ")[0];
+            if (subCommand.equalsIgnoreCase("ny")) {
+                startNewOrder();
+            } else if (subCommand.equalsIgnoreCase("færdiggør")) {
+                if (tmpString.split(" ").length == 2) {
+                    finishOrder(tmpString);
+                } else {
+                    System.err.println("Forkert formatering. færdiggør <id> ");
+                }
+            } else if (subCommand.equalsIgnoreCase("liste")) {
+                orders.showUnfinishedOrders();
             }
-        }
-        else if (command.equalsIgnoreCase("menu")) {
+        } else if (command.equalsIgnoreCase("menu")) {
             //printCommands(command);
             printMenu();
-        }
-        else if (command.equalsIgnoreCase("afslut")) {
+        } else if (command.equalsIgnoreCase("afslut")) {
             exitProgram();
-        }
-        else {
+        } else {
             System.err.println(commandNotFound(command));
+        }
+    }
+
+    private static void finishOrder(String tmpString) {
+        try {
+            int id = Integer.parseInt(tmpString.split(" ")[1]);
+            if (orders.getOrderById(id) != null) {
+                orders.getOrderById(id).finish();
+                System.out.println("Ordrenummer " + id + " er sat til at være færdig");
+            } else {
+                System.err.println("Orderen du ville færdiggøre eksisterer ikke");
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Dit id skal være et heltal.");
         }
     }
 
@@ -98,40 +124,59 @@ public class Main {
         System.out.println(menu);
     }
 
-    private static void commandOrder(String[] args) {
-        String subCommand = args[0];
-        if(subCommand.equalsIgnoreCase("ny")) {
-            Order tmpOrder = new Order();
-
+    public static void startNewOrder() {
+        Order tmpOrder = new Order();
+        boolean finished;
+        do {
+            finished = true;
+            tmpOrder.clearPizzas();
             System.out.println("Vælg pizzaer separeret af komma. Eksempel: 22, 22, 10");
-            String[] pizzaIds = INPUT.nextLine().split(", ");
-            for(String pizzaId : pizzaIds) {
-                int id = Integer.parseInt(pizzaId);
-                //TODO: Få pizza fra menu med ID, og tilføj til odreren.
+            try {
+
+                String[] pizzaIds = INPUT.nextLine().split(", ");
+                for (String pizzaId : pizzaIds) {
+                    int id = Integer.parseInt(pizzaId);
+                    if (menu.getPizzaById(id) != null) {
+                        tmpOrder.addPizza(menu.getPizzaById(id));
+                    } else {
+                        System.err.println("Du prøvede at tilføje en pizza der ikke eksisterede (" + id + "). Prøv igen ");
+                        finished = false;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Der var en fejl med din formatering. Prøv igen");
+                finished = false;
             }
+
+        } while (!finished);
+
+        do {
+            finished = true;
 
             System.out.println(
                     "Hvilket tidspunkt? Eksempel: 18:30 * OBS: Ved intet indtastet tidspunkt, er ordren sat til om "
-                    + Order.DEFAULT_PICKUP_TIME_MINUTES + " minutter."
+                            + Order.DEFAULT_PICKUP_TIME_MINUTES + " minutter."
             );
-            String[] time = INPUT.nextLine().split(":");
-            tmpOrder.setPickupTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
+            try {
+                String[] time = INPUT.nextLine().split(":");
+                tmpOrder.setPickupTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
+            } catch (Exception e) {
+                System.err.println("Fejl i det indtastede tidspunkt");
+                finished = false;
+            }
+        } while (!finished);
 
-            orders.addOrder(tmpOrder);
-        }
-        else if(subCommand.equalsIgnoreCase("ændre")) {
+        orders.addOrder(tmpOrder);
+        orders.saveOrders();
+        System.out.println("Ordre " + tmpOrder.getId() + " blev oprettet til tidspunktet " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
 
-        }
-        else if(subCommand.equalsIgnoreCase("liste")) {
-
-        }
     }
 
     private static void exitProgram() {
         System.out.println("Er du sikker på du vil afslutte? Alle ordrer vil blive gemt.");
         System.out.println("Muligheder: Afslut | Nej");
         boolean exit = INPUT.nextLine().equalsIgnoreCase("afslut");
-        if(exit) {
+        if (exit) {
             running = false;
         }
     }
