@@ -96,6 +96,9 @@ public class Main {
             } else if (subCommand.equalsIgnoreCase("liste")) {
                 orders.showUnfinishedOrders();
             }
+            else {
+                System.err.println(commandNotFound(subCommand));
+            }
         } else if (command.equalsIgnoreCase("menu")) {
             //printCommands(command);
             printMenu();
