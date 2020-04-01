@@ -168,9 +168,21 @@ public class Main {
             }
         } while (!finished);
 
-        orders.addOrder(tmpOrder);
-        saveOrders();
-        System.out.println("Ordre " + tmpOrder.getId() + " blev oprettet til tidspunktet " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
+        System.out.println("Er du sikker på at denne ordre er korrekt?:");
+        String pizzaIds = "";
+        for(Pizza pizza : tmpOrder.getPizzas()) {
+            pizzaIds += pizza.getId() + ", ";
+        }
+        System.out.println("Pizzaer: " + pizzaIds + " tidspunkt: " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
+        boolean finishOrder = INPUT.nextLine().equalsIgnoreCase("ja");
+        if(finishOrder){
+            orders.addOrder(tmpOrder);
+            saveOrders();
+            System.out.println("Ordre " + tmpOrder.getId() + " blev oprettet til tidspunktet " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
+        }
+        else {
+            System.out.println("Annullerer ordre.");
+        }
 
     }
 

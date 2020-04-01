@@ -62,6 +62,10 @@ public class Order implements Comparable<Order> {
         return pickupTime.compareTo(o.pickupTime);
     }
 
+    public ArrayList<Pizza> getPizzas() {
+        return items;
+    }
+
     public LocalDateTime getPickupTime() {
         return pickupTime;
     }
