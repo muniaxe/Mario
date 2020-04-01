@@ -19,10 +19,10 @@ Jack Hagedorn Jensen
 public class Main {
 
     //Initiate orderlist and menu.
-    static OrderList orders = new OrderList();
-    static Menu menu = new Menu();
-    static final Scanner INPUT = new Scanner(System.in);
-    static boolean running = true;
+    public static OrderList orders = new OrderList();
+    public static Menu menu = new Menu();
+    public static final Scanner INPUT = new Scanner(System.in);
+    public static boolean running = true;
 
     public static void main(String[] args) {
         populateMenu();
@@ -135,15 +135,9 @@ public class Main {
             try {
 
                 String[] pizzaIds = INPUT.nextLine().split(", ");
-                for (String pizzaId : pizzaIds) {
-                    int id = Integer.parseInt(pizzaId);
-                    if (menu.getPizzaById(id) != null) {
-                        tmpOrder.addPizza(menu.getPizzaById(id));
-                    } else {
-                        System.err.println("Du prøvede at tilføje en pizza der ikke eksisterede (" + id + "). Prøv igen ");
-                        finished = false;
-                    }
-                }
+                if(!tmpOrder.addPizzasByStringOfIds(pizzaIds, menu)) {
+                    finished = false;
+                };
             } catch (Exception e) {
                 System.err.println("Der var en fejl med din formatering. Prøv igen");
                 finished = false;

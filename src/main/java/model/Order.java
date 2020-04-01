@@ -1,5 +1,7 @@
 package model;
 
+import com.sun.tools.javac.Main;
+
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,29 +66,49 @@ public class Order implements Comparable<Order> {
         return pickupTime;
     }
 
+    public double getTotalPrice() {
+        double price = 0;
+        for (Pizza pizza : items) {
+            price += pizza.getPrice();
+        }
+        return price;
+    }
+
     @Override
     public String toString() {
         ArrayList<Integer> pizzaIds = new ArrayList<>();
-        double price = 0;
         for (Pizza pizza : items) {
             pizzaIds.add(pizza.getId());
-            price += pizza.getPrice();
         }
         String time = String.format("%02d:%02d", pickupTime.getHour(), pickupTime.getMinute());
 
-        return String.format("ID: %-4d Pizza: %-35s %-10s %.2f,- DKK", this.id, pizzaIds.toString(), time, price);
+        return String.format("ID: %-4d Pizza: %-35s %-10s %.2f,- DKK", this.id, pizzaIds.toString(), time, this.getTotalPrice());
     }
 
     public String toCSV() {
         char splitter = ';';
-        double price = 0;
         String pizzaIds = "";
         for (Pizza pizza : items) {
             pizzaIds += pizza.getId() + "|";
-            price += pizza.getPrice();
         }
         String time = String.format("%02d:%02d", pickupTime.getHour(), pickupTime.getMinute());
 
-        return String.format("%d"+ splitter + "%s"+ splitter + "%s"+ splitter + "%.2f%n", this.id, pizzaIds.substring(0,pizzaIds.length()-1), time, price);
+        return String.format("%d"+ splitter + "%s"+ splitter + "%s"+ splitter + "%.2f%n", this.id, pizzaIds.substring(0,pizzaIds.length()-1), time, this.getTotalPrice());
+    }
+
+    public boolean addPizzasByStringOfIds(String[] pizzaIds, Menu menu) {
+        boolean noErrors = true;
+        for (String pizzaId : pizzaIds) {
+            int id = Integer.parseInt(pizzaId);
+            if (menu.getPizzaById(id) != null) {
+                this.addPizza(menu.getPizzaById(id));
+            } else {
+                System.err.println("Du prøvede at tilføje en pizza der ikke eksisterede ("
+                        + id
+                        + "). Prøv igen ");
+                noErrors = false;
+            }
+        }
+        return noErrors;
     }
 }
