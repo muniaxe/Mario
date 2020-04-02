@@ -27,15 +27,14 @@ public class Main {
     public static void main(String[] args) {
         populateMenu();
         printWelcome();
+
         while (running) {
             printCommands();
             String command = getCommand();
             executeCommand(command);
         }
 
-        System.out.println("Tak fordsgrfdefrstydfgyhfcdghfghjty i dag!");
-
-
+        System.out.println("Tak for i dag!");
     }
 
     public static void populateMenu() {
@@ -49,7 +48,7 @@ public class Main {
         }
     }
 
-    private static void printWelcome() {
+    public static void printWelcome() {
         System.out.println("Velkommen Mario & Alfonso, til jeres ordrebehandlingssystem!");
         System.out.println("------------------------------------------------------------");
     }
@@ -109,7 +108,7 @@ public class Main {
         }
     }
 
-    private static void finishOrder(String tmpString) {
+    public static void finishOrder(String tmpString) {
         try {
             int id = Integer.parseInt(tmpString.split(" ")[1]);
             if (orders.getOrderById(id) != null) {
@@ -124,7 +123,7 @@ public class Main {
     }
 
 
-    private static void printMenu() {
+    public static void printMenu() {
         System.out.println(menu);
     }
 
@@ -132,15 +131,15 @@ public class Main {
         Order tmpOrder = new Order();
         boolean finished;
         do {
+
             finished = true;
             tmpOrder.clearPizzas();
             System.out.println("Vælg pizzaer separeret af komma. Eksempel: 22, 22, 10");
             try {
-
                 String[] pizzaIds = INPUT.nextLine().split(", ");
                 if(!tmpOrder.addPizzasByStringOfIds(pizzaIds, menu)) {
                     finished = false;
-                };
+                }
             } catch (Exception e) {
                 System.err.println("Der var en fejl med din formatering. Prøv igen");
                 finished = false;
@@ -149,11 +148,11 @@ public class Main {
         } while (!finished);
 
         do {
-            finished = true;
 
+            finished = true;
             System.out.println(
                     "Hvilket tidspunkt? Eksempel: 18:30 * OBS: Ved intet indtastet tidspunkt, er ordren sat til om "
-                            + Order.DEFAULT_PICKUP_TIME_MINUTES + " minutter."
+                    + Order.DEFAULT_PICKUP_TIME_MINUTES + " minutter."
             );
 
             String timeInput = INPUT.nextLine();
@@ -166,6 +165,7 @@ public class Main {
                     finished = false;
                 }
             }
+
         } while (!finished);
 
         System.out.println("Er du sikker på at denne ordre er korrekt?:");
@@ -173,12 +173,19 @@ public class Main {
         for(Pizza pizza : tmpOrder.getPizzas()) {
             pizzaIds += pizza.getId() + ", ";
         }
-        System.out.println("Pizzaer: " + pizzaIds + " tidspunkt: " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
+        System.out.println(
+                "Pizzaer: " + pizzaIds + " tidspunkt: "
+                + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute()
+        );
         boolean finishOrder = INPUT.nextLine().equalsIgnoreCase("ja");
-        if(finishOrder){
+        if(finishOrder) {
             orders.addOrder(tmpOrder);
             saveOrders();
-            System.out.println("Ordre " + tmpOrder.getId() + " blev oprettet til tidspunktet " + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute());
+            System.out.println(
+                    "Ordre " + tmpOrder.getId()
+                    + " blev oprettet til tidspunktet "
+                    + tmpOrder.getPickupTime().getHour() + ":" + tmpOrder.getPickupTime().getMinute()
+            );
         }
         else {
             System.out.println("Annullerer ordre.");
@@ -186,7 +193,7 @@ public class Main {
 
     }
 
-    private static void saveOrders() {
+    public static void saveOrders() {
         ExportPizza export = new ExportPizza();
         try {
             export.exportTodaysOrders(orders);
@@ -196,7 +203,7 @@ public class Main {
         }
     }
 
-    private static void exitProgram() {
+    public static void exitProgram() {
         System.out.println("Er du sikker på du vil afslutte? Alle ordrer vil blive gemt.");
         System.out.println("Muligheder: Afslut | Nej");
         boolean exit = INPUT.nextLine().equalsIgnoreCase("afslut");
@@ -205,7 +212,7 @@ public class Main {
         }
     }
 
-    private static String commandNotFound(String command) {
+    public static String commandNotFound(String command) {
         return "Kommandoen: \"" + command + "\" eksisterer ikke.";
     }
 

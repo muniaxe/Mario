@@ -21,7 +21,9 @@ public class OrderListTest {
         String[] pizzaIds = "22, 22, 10".split(", ");
         tmpOrder.addPizzasByStringOfIds(pizzaIds,menu);
 
-        assertTrue("Prisen for odreren var ikke den forventede pris.", expectedValue == tmpOrder.getTotalPrice());
+        double actual = 50;
+
+        assertEquals( expectedValue, tmpOrder.getTotalPrice(), 0.01);
     }
 
     private void populateMenu() {
