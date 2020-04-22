@@ -5,6 +5,8 @@ import model.Pizza;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ImportPizza {
@@ -27,7 +29,7 @@ public class ImportPizza {
 
             int id = Integer.parseInt(lineArr[0]);
             String name = lineArr[1];
-            String[] toppings = lineArr[2].split("\\|");
+            ArrayList<String> toppings = new ArrayList<>(Arrays.asList(lineArr[2].split("\\|")));
             double price = Double.parseDouble(lineArr[3]);
 
             Pizza pizza = new Pizza(id, name, toppings, price);

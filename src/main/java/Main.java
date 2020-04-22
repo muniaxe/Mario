@@ -1,3 +1,4 @@
+import datamapping.PizzaMapper;
 import file.ExportPizza;
 import file.ImportPizza;
 import model.Menu;
@@ -38,6 +39,7 @@ public class Main {
     }
 
     public static void populateMenu() {
+        /*
         ImportPizza importPizza = new ImportPizza();
         String fileName = "data/Pizzaer.csv";
         try {
@@ -46,6 +48,10 @@ public class Main {
             System.err.println("Vi kunne ikke loade menuen.");
             System.err.println("Filen: " + fileName + ", fandtes ikke.");
         }
+        */
+
+        PizzaMapper pizzaMapper = new PizzaMapper();
+        pizzaMapper.getAllPizzas(menu);
     }
 
     public static void printWelcome() {
