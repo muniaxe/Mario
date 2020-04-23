@@ -1,3 +1,4 @@
+import datamapping.OrderMapper;
 import datamapping.PizzaMapper;
 import file.ExportPizza;
 import file.ImportPizza;
@@ -7,6 +8,7 @@ import model.OrderList;
 import model.Pizza;
 
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.*;
 
 /*
@@ -22,6 +24,8 @@ public class Main {
     //Initiate orderlist and menu.
     public static OrderList orders = new OrderList();
     public static Menu menu = new Menu();
+    public static OrderMapper orderMapper = new OrderMapper();
+    public static PizzaMapper pizzaMapper = new PizzaMapper();
     public static final Scanner INPUT = new Scanner(System.in);
     public static boolean running = true;
 
@@ -49,8 +53,6 @@ public class Main {
             System.err.println("Filen: " + fileName + ", fandtes ikke.");
         }
         */
-
-        PizzaMapper pizzaMapper = new PizzaMapper();
         pizzaMapper.getAllPizzas(menu);
     }
 
@@ -86,10 +88,12 @@ public class Main {
     }
 
     public static void executeCommand(String command) {
+
         if (command.equalsIgnoreCase("ordre")) {
             printCommands(command);
             String tmpString = getCommand();
             String subCommand = tmpString.split(" ")[0];
+
             if (subCommand.equalsIgnoreCase("ny")) {
                 startNewOrder();
             } else if (subCommand.equalsIgnoreCase("færdiggør")) {
@@ -104,12 +108,19 @@ public class Main {
             else {
                 System.err.println(commandNotFound(subCommand));
             }
-        } else if (command.equalsIgnoreCase("menu")) {
+
+        }
+
+        else if (command.equalsIgnoreCase("menu")) {
             //printCommands(command);
             printMenu();
-        } else if (command.equalsIgnoreCase("afslut")) {
+        }
+
+        else if (command.equalsIgnoreCase("afslut")) {
             exitProgram();
-        } else {
+        }
+
+        else {
             System.err.println(commandNotFound(command));
         }
     }
@@ -118,8 +129,15 @@ public class Main {
         try {
             int id = Integer.parseInt(tmpString.split(" ")[1]);
             if (orders.getOrderById(id) != null) {
-                orders.getOrderById(id).finish();
-                System.out.println("Ordrenummer " + id + " er sat til at være færdig");
+                Order order = orders.getOrderById(id);
+
+                if(orderMapper.saveOrder(order)) {
+                    order.finish();
+                    System.out.println("Ordrenummer " + id + " er sat til at være færdig");
+                }
+                else {
+                    System.err.println("Der skete en fejl, da vi prøvede at gemme dataen.");
+                }
             } else {
                 System.err.println("Orderen du ville færdiggøre eksisterer ikke");
             }
@@ -186,7 +204,8 @@ public class Main {
         boolean finishOrder = INPUT.nextLine().equalsIgnoreCase("ja");
         if(finishOrder) {
             orders.addOrder(tmpOrder);
-            saveOrders();
+            //Removed for DB rework.
+            //saveOrders();
             System.out.println(
                     "Ordre " + tmpOrder.getId()
                     + " blev oprettet til tidspunktet "
