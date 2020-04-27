@@ -27,7 +27,7 @@ public class OrderMapper {
             ResultSet rs = null;
             int orderID = 0;
 
-            String orderQuery = "INSERT INTO orders (pickup_time) VALUES (DEFAULT)";
+            String orderQuery = "INSERT INTO orders (date) VALUES (DEFAULT)";
 
             //Retrieve insert ID (auto_increment)
             orderStatement.executeUpdate(orderQuery, orderStatement.RETURN_GENERATED_KEYS);
