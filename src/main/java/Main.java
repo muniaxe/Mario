@@ -128,9 +128,8 @@ public class Main {
     public static void finishOrder(String tmpString) {
         try {
             int id = Integer.parseInt(tmpString.split(" ")[1]);
-            if (orders.getOrderById(id) != null) {
-                Order order = orders.getOrderById(id);
-
+            Order order = orders.getOrderById(id);
+            if (order != null && !order.isDone()) {
                 if(orderMapper.saveOrder(order)) {
                     order.finish();
                     System.out.println("Ordrenummer " + id + " er sat til at være færdig");
