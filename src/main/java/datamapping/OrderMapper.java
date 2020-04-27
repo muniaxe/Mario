@@ -24,16 +24,25 @@ public class OrderMapper {
             //1 -> 2 -> ... Crash // -> 3 -> 4
 
             Statement orderStatement = connection.createStatement();
+            ResultSet rs = null;
+            int orderID = 0;
 
-            String orderQuery = "INSERT INTO orders DEFAULT VALUES";
-            int orderID = orderStatement.executeUpdate(orderQuery, orderStatement.RETURN_GENERATED_KEYS);
+            String orderQuery = "INSERT INTO orders (pickup_time) VALUES (DEFAULT)";
+
+            //Retrieve insert ID (auto_increment)
+            orderStatement.executeUpdate(orderQuery, orderStatement.RETURN_GENERATED_KEYS);
+            rs = orderStatement.getGeneratedKeys();
+            if(rs.next()){
+                orderID = rs.getInt(1);
+            }
+
 
             for(Pizza pizza : order.getPizzas()) {
                 int pizzaID = pizza.getId();
                 String ordersPizzasQuery = "INSERT INTO orders_pizzas (orderID, pizzaID) VALUES (" + orderID + ", " + pizzaID + ")";
                 orderStatement.executeUpdate(ordersPizzasQuery);
             }
-
+            orderStatement.close();
             return true;
 
         } catch(SQLException e) {
